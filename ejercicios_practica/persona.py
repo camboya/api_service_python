@@ -86,3 +86,25 @@ def report(limit=0, offset=0):
     # Cerrar la conexión con la base de datos
     conn.close()
     return query_results
+
+
+def nationality_review():
+    
+    conn = sqlite3.connect(db['database'])
+    c = conn.cursor()
+    
+    c.execute('''SELECT COUNT(name) AS cantidadde_personas, nationality \
+                FROM persona GROUP BY nationality;''')
+        
+    resultados = c.fetchall()
+    
+    if resultados is None:
+        return []
+
+    conn.close()
+
+    
+    total_personas = [x[0] for x in resultados]
+    nacionalidad =  [x[1] for x in resultados]
+
+    return total_personas, nacionalidad

@@ -109,6 +109,33 @@ def comparativa():
         return jsonify({'trace': traceback.format_exc()})
 
 
+#comparar nacionalidades
+    try:
+        
+        
+        total_personas, nacionalidad = persona.nationality_review()
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        
+        ax.bar(nacionalidad, total_personas, color='')
+        
+        ax.set_title('comparativo de las nacionalidades')
+        ax.set_xlabel('nacionalidades')
+        ax.set_ylabel('cantidad de personas')
+        ax.grid()
+        ax.set_facecolor('')
+
+        output = io.BytesIO()
+        FigureCanvas(fig).print_png(output)
+        plt.close(fig)
+        return Response(output.getvalue(), mimetype='image/png')
+
+    except:
+        return jsonify({'trace': traceback.format_exc()})
+
+        
+
+
 @app.route("/registro", methods=['POST'])
 def registro():
     if request.method == 'POST':
@@ -118,6 +145,17 @@ def registro():
         # nationality = ...
         
         # persona.insert(name, int(age), nationality)
+
+        name = str(request.form.get('name'))
+        age = str(request.form.get('age'))
+        nationality = str(request.form.get('nationality'))
+
+        if(name is None or nationality is None or age.isdigit() is False):
+                return Response(status=400)
+        
+        persona.insert(name, int(age), nationality)
+        
+        
         return Response(status=200)
     
 
